@@ -26,3 +26,6 @@ axum-prometheus = "0.8"
 metrics-exporter-prometheus = "0.17"
 minijinja = { version = "2", features = ["builtins"] }
 minijinja-embed = "2"
+
+[profile.release]
+strip = "symbols"

@@ -1,6 +1,16 @@
 [tasks.build-image]
 description = "Build Docker image with version tag from Cargo.toml"
+
+[ tasks.build-image.script.unix ]
 script = [
     "VERSION=$(awk -F\\\" '/^version =/ {print $2; exit}' Cargo.toml)",
     "docker build -t capster:$VERSION ."
+]
+
+[ tasks.build-image.script.windows ]
+script = [
+    "powershell -Command \"(Select-String -Path Cargo.toml -Pattern '^version = \\\"(.+)\\\"' | ForEach-Object { $_.Matches[0].Groups[1].Value })\" > version.txt",
+    "set /p VERSION=<version.txt",
+    "docker build -t capster:%VERSION% .",
+    "del version.txt"
 ]
