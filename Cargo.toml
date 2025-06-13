@@ -19,7 +19,7 @@ uuid = { version = "1.17.0", features = ["v7", "v4", "zerocopy"] }
 moka = { version = "0.12", features = ["future", 'event-listener', 'log'] }
 rand = { version = "0.9" }
 utoipa = { version = "5", features = ["axum_extras", "debug"] }
-#utoipa-swagger-ui = { version = "9", features = ["axum"] }
+utoipa-swagger-ui = { version = "9", features = ["axum", "vendored"] }
 utoipa-axum = { version = "0.2", features = ["debug"] }
 image = "0.24.9"
 axum-prometheus = "0.8"

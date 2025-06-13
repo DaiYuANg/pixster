@@ -10,6 +10,13 @@ pub struct CaptchaResponse {
   captcha: String,
 }
 
+#[utoipa::path(
+  method(get, head),
+  path = "/captcha/generate",
+  responses(
+        (status = OK, description = "Success", body = str, content_type = "text/plain")
+  )
+)]
 pub async fn generate_captcha_handler(state: Extension<AppState>) -> Json<CaptchaResponse> {
   let token = Uuid::now_v7().to_string();
   let length = 5;

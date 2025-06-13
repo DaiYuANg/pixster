@@ -21,6 +21,9 @@ use tokio::signal;
 use tracing::info;
 use tracing_subscriber::EnvFilter;
 use utoipa::OpenApi;
+use utoipa_axum::router::OpenApiRouter;
+use utoipa_axum::routes;
+use utoipa_swagger_ui::SwaggerUi;
 
 const CUSTOMER_TAG: &str = "customer";
 const ORDER_TAG: &str = "order";
@@ -75,6 +78,7 @@ async fn main() {
     captcha_config,
   };
   let (prom_layer, metric_handle) = PrometheusMetricLayer::pair();
+
   let app = Router::new()
     .route("/captcha/generate", get(generate_captcha_handler))
     .route("/captcha/generate/image", get(captcha_image_handler))
