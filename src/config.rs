@@ -1,15 +1,17 @@
+use crate::store::StoreBackend;
 use dotenvy::dotenv;
-use figment::providers::{Env, Format, Serialized, Toml};
 use figment::Figment;
+use figment::providers::{Env, Format, Serialized, Toml};
 use serde::Deserialize;
 use serde_derive::Serialize;
-use tracing::debug;
+use tracing::{debug, info};
 
 #[derive(Deserialize, Debug, Clone, Serialize)]
 #[serde(default)]
 pub struct AppConfig {
   pub server: ServerConfig,
   pub captcha: CaptchaConfig,
+  pub store: StoreConfig,
 }
 
 #[derive(Deserialize, Debug, Clone, Serialize)]
@@ -26,6 +28,12 @@ pub struct CaptchaConfig {
   pub height: u32,
 }
 
+#[derive(Deserialize, Debug, Clone, Serialize)]
+pub struct StoreConfig {
+  pub backend: StoreBackend,
+  pub url: String,
+}
+
 impl Default for AppConfig {
   fn default() -> Self {
     AppConfig {
@@ -39,19 +47,23 @@ impl Default for AppConfig {
         width: 200,
         height: 200,
       },
+      store: StoreConfig {
+        backend: StoreBackend::Memory,
+        url: "redis://localhost:6379".into(),
+      },
     }
   }
 }
 
 pub fn load_config() -> AppConfig {
+  let env_prefix = "CAPSTER_";
   dotenv().ok();
   std::env::vars()
-    .filter(|(k, _)| k.starts_with("CAPSTER_"))
+    .filter(|(k, _)| k.starts_with(env_prefix))
     .for_each(|(k, v)| debug!("{} = {}", k, v));
   let figment = Figment::from(Serialized::defaults(AppConfig::default()))
     .merge(Toml::file("Config.toml").nested())
-    .merge(Env::prefixed("CAPSTER_"));
-  debug!("{:#?}", figment.find_value("server.port"));
-  let config = figment.extract_lossy().expect("配置加载失败");
+    .merge(Env::prefixed(env_prefix).split("_"));
+  let config = figment.extract().expect("配置加载失败");
   config
 }
