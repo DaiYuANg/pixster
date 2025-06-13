@@ -1,0 +1,6 @@
+[tasks.build-image]
+description = "Build Docker image with version tag from Cargo.toml"
+script = [
+    "VERSION=$(awk -F\\\" '/^version =/ {print $2; exit}' Cargo.toml)",
+    "docker build -t capster:$VERSION ."
+]
