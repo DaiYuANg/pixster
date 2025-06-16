@@ -1,22 +1,18 @@
+use crate::config::CaptchaConfig;
 use crate::store::CaptchaStore;
 use moka::future::Cache;
-use moka::policy::EvictionPolicy;
-use std::collections::HashMap;
-use std::sync::Arc;
-use tokio::sync::RwLock;
-use tokio::time::{Duration, sleep};
+use tokio::time::Duration;
 
 pub struct InMemoryStore {
   cache: Cache<String, String>,
 }
 
 impl InMemoryStore {
-  pub fn new() -> Self {
+  pub fn new(captcha_config: CaptchaConfig) -> Self {
     Self {
       // 设置最大容量，可按需调整，比如 10_000
       cache: Cache::builder()
-        .time_to_live(Duration::from_secs(120))
-        .time_to_idle(Duration::from_secs(60))
+        .time_to_live(Duration::from_secs(captcha_config.expire_seconds as u64))
         .weigher(|_k: &String, v: &String| v.len() as u32)
         .build(),
     }

@@ -18,7 +18,8 @@ tracing-subscriber = { version = "0.3.19", features = ["env-filter", "default"] 
 uuid = { version = "1.17.0", features = ["v7", "v4", "zerocopy"] }
 moka = { version = "0.12", features = ["future", 'event-listener', 'log'] }
 rand = { version = "0.9" }
-utoipa = { version = "5", features = ["axum_extras", "debug"] }
+tower-http = { version = "0.6.6", features = ["trace"] }
+utoipa = { version = "5", features = ["axum_extras", "debug", 'indexmap'] }
 utoipa-swagger-ui = { version = "9", features = ["axum", "vendored"] }
 utoipa-axum = { version = "0.2", features = ["debug"] }
 image = "0.24.9"

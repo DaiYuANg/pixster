@@ -1,26 +1,29 @@
 use crate::app_state::AppState;
+use crate::captcha_builder::CaptchaParameter;
 use crate::random::random_string;
-use axum::Extension;
 use axum::body::Body;
-use axum::http::{Response, StatusCode, header};
+use axum::extract::Query;
+use axum::http::{header, Response, StatusCode};
 use axum::response::IntoResponse;
-use captcha_rs::CaptchaBuilder;
+use axum::Extension;
 use std::io::Cursor;
 use uuid::Uuid;
 
-pub async fn captcha_image_handler(Extension(state): Extension<AppState>) -> impl IntoResponse {
+#[utoipa::path(
+  get,
+  path = "/captcha/generate/image",
+  responses(
+        (status = 200, description = "Generate image captcha", content_type = "image/png")
+  )
+)]
+pub async fn captcha_image_handler(
+  Extension(state): Extension<AppState>,
+  Query(params): Query<CaptchaParameter>,
+) -> impl IntoResponse {
   let token = Uuid::now_v7().to_string();
-  let length = 5;
+  let length = params.length.unwrap_or(5);
   let captcha_value = random_string(length);
-  let captcha = CaptchaBuilder::new()
-    .length(length)
-    .width(130)
-    .text(captcha_value.clone())
-    .height(40)
-    .dark_mode(false)
-    .complexity(10) // min: 1, max: 10
-    .compression(99) // min: 1, max: 99
-    .build();
+  let captcha = params.build(captcha_value.clone());
   let image_bytes = {
     let mut buf = Vec::new();
     captcha
@@ -29,7 +32,7 @@ pub async fn captcha_image_handler(Extension(state): Extension<AppState>) -> imp
       .unwrap();
     buf
   };
-  state.store.set(token.clone(), captcha_value.clone()).await;
+  state.store.set(token.clone(), captcha_value).await;
   // 构造响应
   Response::builder()
     .status(StatusCode::OK)
