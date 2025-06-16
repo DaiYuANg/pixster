@@ -28,7 +28,7 @@ pub async fn generate_captcha_handler(state: Extension<AppState>) -> Json<Captch
     .height(40)
     .dark_mode(false)
     .complexity(1) // min: 1, max: 10
-    .compression(1) // min: 1, max: 99
+    .compression(99) // min: 1, max: 99
     .build()
     .to_base64();
 
