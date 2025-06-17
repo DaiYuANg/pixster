@@ -4,7 +4,6 @@ use axum::extract::Query;
 use axum::{Extension, Json};
 use serde_derive::{Deserialize, Serialize};
 use tracing::debug;
-use tracing::field::debug;
 use utoipa::ToSchema;
 use uuid::Uuid;
 

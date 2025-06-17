@@ -1,10 +1,8 @@
 use axum::body::Bytes;
 use axum::extract::Query;
-use axum::http::{HeaderMap, HeaderValue, StatusCode};
+use axum::http::{HeaderMap, HeaderValue};
 use axum::response::IntoResponse;
-use image::ImageReader;
 use serde_derive::{Deserialize, Serialize};
-use std::io::Cursor;
 use utoipa::ToSchema;
 
 #[derive(Deserialize, Serialize, ToSchema, Debug)]
