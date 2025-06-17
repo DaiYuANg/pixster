@@ -34,6 +34,9 @@
 # -------- Stage 1: Build --------
 FROM rust:1.87 as builder
 
+RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list.d/debian.sources && \
+    sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list.d/debian.sources
+
 # 安装 musl 工具链
 RUN apt-get update && apt-get install -y musl-tools pkg-config clang && rustup target add x86_64-unknown-linux-musl
 
@@ -52,6 +55,8 @@ RUN cargo build --release --target x86_64-unknown-linux-musl
 
 # -------- Stage 2: Runtime --------
 FROM alpine:latest
+
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
 
 # 安装运行时 CA 证书（如果需要发 HTTPS 请求）
 RUN apk add --no-cache ca-certificates
