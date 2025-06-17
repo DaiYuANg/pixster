@@ -10,7 +10,6 @@ pub struct InMemoryStore {
 impl InMemoryStore {
   pub fn new(captcha_config: CaptchaConfig) -> Self {
     Self {
-      // 设置最大容量，可按需调整，比如 10_000
       cache: Cache::builder()
         .time_to_live(Duration::from_secs(captcha_config.expire_seconds as u64))
         .weigher(|_k: &String, v: &String| v.len() as u32)

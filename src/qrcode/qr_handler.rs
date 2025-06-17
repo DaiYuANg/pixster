@@ -1,3 +1,5 @@
+use crate::app_state::AppState;
+use axum::Extension;
 use axum::extract::Query;
 use axum::http::{HeaderMap, HeaderValue, StatusCode};
 use axum::response::IntoResponse;
@@ -7,6 +9,7 @@ pub use image::{ColorType, EncodableLayout, ExtendedColorType, ImageEncoder, Lum
 use qrcode::render::svg;
 use qrcode::{EcLevel, QrCode};
 use serde_derive::Deserialize;
+use tracing::debug;
 use utoipa::{IntoParams, ToSchema};
 
 #[derive(Debug, Deserialize, ToSchema, IntoParams, Clone)]
@@ -38,7 +41,10 @@ fn parse_ec_level(level: &Option<String>) -> EcLevel {
         (status = 200, description = "OK")
   )
 )]
-pub async fn generate_qr(Query(params): Query<QrRequest>) -> impl IntoResponse {
+pub async fn generate_qr(
+  Query(params): Query<QrRequest>,
+  state: Extension<AppState>,
+) -> impl IntoResponse {
   if params.text.is_empty() {
     return (
       StatusCode::BAD_REQUEST,
@@ -46,6 +52,19 @@ pub async fn generate_qr(Query(params): Query<QrRequest>) -> impl IntoResponse {
     )
       .into_response();
   }
+
+  // 生成缓存 key，比如简单拼接后做哈希
+  let cache_key = {
+    use sha2::{Digest, Sha256};
+    let raw_key = format!(
+      "{}|{:?}|{:?}|{:?}",
+      params.text, params.ec_level, params.size, params.format
+    );
+    let hash = Sha256::digest(raw_key.as_bytes());
+    format!("qr_cache:{:x}", hash)
+  };
+
+  debug!("cache key{}", cache_key);
 
   let ec_level = parse_ec_level(&params.ec_level);
   let size = params.size.unwrap_or(256);
