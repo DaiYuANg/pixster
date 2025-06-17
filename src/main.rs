@@ -4,6 +4,7 @@ mod config;
 mod qrcode;
 mod random;
 mod store;
+mod operate;
 
 use crate::app_state::AppState;
 use crate::config::{AppConfig, load_config};

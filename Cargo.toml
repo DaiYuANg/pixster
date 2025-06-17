@@ -22,7 +22,7 @@ tower-http = { version = "0.6.6", features = ["trace"] }
 utoipa = { version = "5", features = ["axum_extras", "debug", 'indexmap'] }
 utoipa-swagger-ui = { version = "9", features = ["axum", "vendored"] }
 utoipa-axum = { version = "0.2", features = ["debug"] }
-image = { version = "0.25", features = ["png", 'default-formats', 'serde'] }
+image = { version = "0.25", features = ["png", 'default-formats', 'serde', 'webp', "bmp", 'jpeg'] }
 axum-prometheus = "0.8"
 metrics-exporter-prometheus = "0.17"
 minijinja = { version = "2", features = ["builtins"] }
@@ -30,6 +30,7 @@ minijinja-embed = "2"
 serde_qs = "0.12"
 qrcode = { version = "0.14.1", features = ["image"] }
 base64 = "0.22.1"
+rusttype = "0.9"
 
 [profile.release]
 strip = "symbols"
