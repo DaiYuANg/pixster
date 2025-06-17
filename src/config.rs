@@ -1,10 +1,10 @@
-use crate::store::StoreBackend;
 use dotenvy::dotenv;
 use figment::providers::{Env, Format, Serialized, Toml};
 use figment::Figment;
 use serde::Deserialize;
 use serde_derive::Serialize;
 use tracing::debug;
+use crate::store::StoreBackend;
 
 #[derive(Deserialize, Debug, Clone, Serialize)]
 #[serde(default)]

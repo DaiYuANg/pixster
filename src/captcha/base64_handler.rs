@@ -1,5 +1,5 @@
 use crate::app_state::AppState;
-use crate::captcha_builder::CaptchaParameter;
+use crate::captcha::captcha_builder::CaptchaParameter;
 use axum::extract::Query;
 use axum::{Extension, Json};
 use serde_derive::{Deserialize, Serialize};

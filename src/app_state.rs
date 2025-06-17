@@ -1,7 +1,7 @@
-use crate::store::CaptchaStore;
 use std::sync::Arc;
+use crate::store::Store;
 
 #[derive(Clone)]
 pub struct AppState {
-  pub store: Arc<dyn CaptchaStore>,
+  pub store: Arc<dyn Store>,
 }

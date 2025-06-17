@@ -5,7 +5,7 @@ edition = "2024"
 
 [dependencies]
 axum = { version = "0.8.4" }
-captcha-rs = "0.2.11"
+captcha-rs = { version = "0.2.11" }
 tokio = { version = "1", features = ["full"] }
 figment = { version = "0.10.19", features = ["env", 'toml', 'serde_json'] }
 serde = { version = "1.0", features = ["derive"] }
@@ -22,11 +22,14 @@ tower-http = { version = "0.6.6", features = ["trace"] }
 utoipa = { version = "5", features = ["axum_extras", "debug", 'indexmap'] }
 utoipa-swagger-ui = { version = "9", features = ["axum", "vendored"] }
 utoipa-axum = { version = "0.2", features = ["debug"] }
-image = "0.24.9"
+image = { version = "0.25", features = ["png", 'default-formats', 'serde'] }
 axum-prometheus = "0.8"
 metrics-exporter-prometheus = "0.17"
 minijinja = { version = "2", features = ["builtins"] }
 minijinja-embed = "2"
+serde_qs = "0.12"
+qrcode = { version = "0.14.1", features = ["image"] }
+base64 = "0.22.1"
 
 [profile.release]
 strip = "symbols"

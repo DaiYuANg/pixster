@@ -1,7 +1,7 @@
 use crate::config::CaptchaConfig;
-use crate::store::CaptchaStore;
 use moka::future::Cache;
 use tokio::time::Duration;
+use crate::store::Store;
 
 pub struct InMemoryStore {
   cache: Cache<String, String>,
@@ -20,7 +20,7 @@ impl InMemoryStore {
 }
 
 #[async_trait::async_trait]
-impl CaptchaStore for InMemoryStore {
+impl Store for InMemoryStore {
   async fn set(&self, key: String, value: String) {
     self.cache.insert(key, value).await;
   }

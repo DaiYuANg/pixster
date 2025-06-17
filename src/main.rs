@@ -1,24 +1,21 @@
 mod app_state;
-mod base64_handler;
-mod captcha_builder;
+mod captcha;
 mod config;
-mod image_handler;
-mod memory_store;
+mod qrcode;
 mod random;
-mod redis_store;
 mod store;
-mod verify_handler;
+
 use crate::app_state::AppState;
-use crate::base64_handler::__path_generate_captcha_handler;
-use crate::base64_handler::generate_captcha_handler;
-use crate::config::{load_config, AppConfig};
-use crate::image_handler::__path_captcha_image_handler;
-use crate::image_handler::captcha_image_handler;
+use crate::config::{AppConfig, load_config};
+use crate::qrcode::qr_handler::generate_qr;
 use crate::store::create_store;
-use crate::verify_handler::__path_verify_captcha_handler;
-use crate::verify_handler::verify_captcha_handler;
-use axum::{routing::get, Extension, Router};
+use axum::{Extension, Router, routing::get};
 use axum_prometheus::PrometheusMetricLayer;
+use captcha::base64_handler::__path_generate_captcha_handler;
+use captcha::base64_handler::generate_captcha_handler;
+use captcha::verify_handler::__path_verify_captcha_handler;
+use captcha::verify_handler::verify_captcha_handler;
+use qrcode::qr_handler::__path_generate_qr;
 use std::net::SocketAddr;
 use tokio::signal;
 use tower_http::trace::TraceLayer;
@@ -33,8 +30,8 @@ const ORDER_TAG: &str = "order";
 #[openapi(
   paths(
     generate_captcha_handler,
-    captcha_image_handler,
     verify_captcha_handler,
+    generate_qr
   ),
   tags(
         (name = CUSTOMER_TAG, description = "Customer API endpoints"),
@@ -86,8 +83,8 @@ async fn main() {
 
   let app = Router::new()
     .route("/captcha/generate", get(generate_captcha_handler))
-    .route("/captcha/generate/image", get(captcha_image_handler))
     .route("/captcha/verify", get(verify_captcha_handler))
+    .route("/qrcode", get(generate_qr))
     .route("/ping", get(|| async { "pong" }))
     .route(
       "/metrics",

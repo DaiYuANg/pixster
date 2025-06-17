@@ -1,9 +1,9 @@
 use crate::config::CaptchaConfig;
-use crate::store::CaptchaStore;
 use async_trait::async_trait;
 use redis::aio::ConnectionManager;
 use redis::{AsyncCommands, Client, RedisError};
 use std::sync::Arc;
+use crate::store::Store;
 
 pub struct RedisStore {
   conn_mgr: Arc<ConnectionManager>,
@@ -22,7 +22,7 @@ impl RedisStore {
 }
 
 #[async_trait]
-impl CaptchaStore for RedisStore {
+impl Store for RedisStore {
   async fn set(&self, key: String, value: String) {
     let mut conn = (*self.conn_mgr).clone();
     let _: () = conn
