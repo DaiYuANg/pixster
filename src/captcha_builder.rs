@@ -16,7 +16,6 @@ impl CaptchaParameter {
     
     CaptchaBuilder::new()
       .text(value)
-      .length(self.length.unwrap_or(default.length.unwrap_or(5)))
       .width(self.width.unwrap_or(default.width.unwrap_or(130)))
       .height(self.height.unwrap_or(default.height.unwrap_or(40)))
       .complexity(self.complexity.unwrap_or(default.complexity.unwrap_or(1)))
