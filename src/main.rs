@@ -1,15 +1,19 @@
 mod app_state;
 mod captcha;
 mod config;
+mod converter;
+mod operate;
 mod qrcode;
 mod random;
 mod store;
-mod operate;
 
+use crate::converter::convert_handler::__path_convert_image;
 use crate::app_state::AppState;
 use crate::config::{AppConfig, load_config};
+use crate::converter::convert_handler::convert_image;
 use crate::qrcode::qr_handler::generate_qr;
 use crate::store::create_store;
+use axum::routing::post;
 use axum::{Extension, Router, routing::get};
 use axum_prometheus::PrometheusMetricLayer;
 use captcha::base64_handler::__path_generate_captcha_handler;
@@ -32,7 +36,8 @@ const ORDER_TAG: &str = "order";
   paths(
     generate_captcha_handler,
     verify_captcha_handler,
-    generate_qr
+    generate_qr,
+    convert_image
   ),
   tags(
         (name = CUSTOMER_TAG, description = "Customer API endpoints"),
@@ -86,6 +91,7 @@ async fn main() {
     .route("/captcha/generate", get(generate_captcha_handler))
     .route("/captcha/verify", get(verify_captcha_handler))
     .route("/qrcode", get(generate_qr))
+    .route("/convert", post(convert_image))
     .route("/ping", get(|| async { "pong" }))
     .route(
       "/metrics",
