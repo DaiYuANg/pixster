@@ -15,8 +15,6 @@ pub trait Store: Send + Sync {
   async fn remove(&self, key: &str);
 }
 
-
-
 #[derive(Deserialize, Debug, Clone, Serialize)]
 pub enum StoreBackend {
   Memory,
@@ -28,9 +26,8 @@ pub async fn create_store(config: StoreConfig, captcha_config: CaptchaConfig) ->
   match backend {
     StoreBackend::Memory => Arc::new(InMemoryStore::new(captcha_config)),
     StoreBackend::Redis => {
-      let redis_store = RedisStore::new(config.url.as_ref(), captcha_config)
-        .await
-        .unwrap();
+      let url = config.url.expect("url is required");
+      let redis_store = RedisStore::new(url.as_ref(), captcha_config).await.unwrap();
       Arc::new(redis_store)
     }
   }

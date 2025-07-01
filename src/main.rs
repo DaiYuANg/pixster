@@ -29,8 +29,6 @@ use tracing_subscriber::EnvFilter;
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 
-const CUSTOMER_TAG: &str = "customer";
-const ORDER_TAG: &str = "order";
 #[derive(OpenApi)]
 #[openapi(
   paths(
@@ -39,10 +37,6 @@ const ORDER_TAG: &str = "order";
     generate_qr,
     convert_image
   ),
-  tags(
-        (name = CUSTOMER_TAG, description = "Customer API endpoints"),
-        (name = ORDER_TAG, description = "Order API endpoints")
-  )
 )]
 struct ApiDoc;
 
@@ -97,14 +91,14 @@ async fn main() {
       "/metrics",
       get(move || async move { metric_handle.render() }),
     )
-    .merge(SwaggerUi::new("/swagger-ui").url("/api-doc/openapi.json", ApiDoc::openapi()))
+    .merge(SwaggerUi::new("/").url("/api-doc/openapi.json", ApiDoc::openapi()))
     .layer(prom_layer)
     .layer(TraceLayer::new_for_http())
     .layer(Extension(app_state));
   let addr = SocketAddr::from(([0, 0, 0, 0], config.server.port));
   info!("Server start at http://{}", addr);
   info!(
-    "Captcha API server listening on http://localhost:{}/swagger-ui",
+    "Captcha API server listening on http://localhost:{}/",
     config.server.port
   );
   let listener = tokio::net::TcpListener::bind(addr).await.unwrap();

@@ -28,7 +28,7 @@ pub struct ServerConfig {
 #[derive(Deserialize, Debug, Clone, Serialize)]
 pub struct StoreConfig {
   pub backend: StoreBackend,
-  pub url: String,
+  pub url: Option<String>,
 }
 
 impl Default for AppConfig {
@@ -43,7 +43,7 @@ impl Default for AppConfig {
       },
       store: StoreConfig {
         backend: StoreBackend::Memory,
-        url: "redis://localhost:6379".into(),
+        url: None,
       },
     }
   }
