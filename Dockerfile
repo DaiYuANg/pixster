@@ -18,8 +18,8 @@ RUN cargo build --release --target x86_64-unknown-linux-musl
 
 FROM gcr.io/distroless/static:nonroot
 
-COPY --from=builder /usr/src/app/target/x86_64-unknown-linux-musl/release/capster /usr/local/bin/capster
+COPY --from=builder /usr/src/app/target/x86_64-unknown-linux-musl/release/pixster /usr/local/bin/pixster
 
 EXPOSE 5000
 
-ENTRYPOINT ["/usr/local/bin/capster"]
+ENTRYPOINT ["/usr/local/bin/pixster"]
